@@ -3,25 +3,29 @@ service: api-web-scraping
 
 provider:
   name: aws
-  runtime: python3.13
-  # Default memory size for functions (default: 1024MB)
+  runtime: python3.10
   memorySize: 1024
   timeout: 20
+  region: us-east-1
   iam:
     role: arn:aws:iam::213965374161:role/LabRole
 
+custom:
+  pythonRequirements:
+    dockerizePip: non-linux
+
 functions:
-  scrape_table:
-    handler: scrap_table.lambda_handler  # Asegúrarse de que el nombre del archivo y la función coincidan
-    package:
-      include:
-        - ./**  # Incluir todo el contenido del directorio
+  scrape_earthquakes:
+    handler: scrap_table.lambda_handler
     events:
       - http:
-          path: /scrape/table
+          path: /scrape/earthquakes
           method: get
           cors: true
-          integration: lambda
+
+package:
+  include:
+    - ./**
 
 resources:
   Resources:
